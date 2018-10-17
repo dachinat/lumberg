@@ -5,6 +5,19 @@ module Lumberg
     # Be sure to keep our API consistent and work around those inconsistencies internally
     class Account < Base
 
+      # This function forces a user to change the account password after the next login attempt.
+      #
+      # ==== Required
+      #  * <tt>:users_json</tt> - PENDING
+      #
+      # ==== Optional
+      #  * <tt>:stop_on_failure</tt> - PENDING
+      def forcepasswordchange(options = {})
+        request = server.perform_request('forcepasswordchange', options.merge('api.version' => 1))
+        request[:success] = true
+        request
+      end
+
       # Creates a hosting account and sets up its associated domain information
       #
       # ==== Required
