@@ -45,6 +45,9 @@ module Lumberg
       # Whostmgr
       attr_accessor :whostmgr
 
+      # Csf
+      attr_accessor :csfmode
+
       #
       # ==== Required
       #  * <tt>:host</tt> - PENDING
@@ -70,13 +73,18 @@ module Lumberg
       end
 
       def perform_request(function, options = {})
+        @force_response_type = nil
+
         # WHM sometime uses different keys for the result hash
         @response_key = options.delete(:response_key) || 'result'
 
         @whostmgr = options.delete(:whostmgr)
-        @base_url = format_url(options) if @whostmgr
+        @csfmode = options.delete(:csf)
+        @base_url = format_url(options)
         @function = function
         @params   = format_query(options)
+
+        @force_response_type = :csf if @csfmode
 
         yield self if block_given?
 
@@ -236,6 +244,10 @@ module Lumberg
         @transfer_tool ||= TransferTool.new(server: self)
       end
 
+      def csf
+        @csf ||= Csf.new(server: self)
+      end
+
     private
 
       def do_request(uri, function, params)
@@ -294,7 +306,7 @@ module Lumberg
         port  = (@ssl ? 2087 : 2086)
         proto = (@ssl ? 'https' : 'http')
 
-        api = @whostmgr ? "scripts2" : "json-api"
+        api = @csfmode ? "cgi" : @whostmgr ? "scripts2" : "json-api"
 
         "#{proto}://#{@host}:#{port}/#{api}/"
       end

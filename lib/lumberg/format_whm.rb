@@ -26,7 +26,7 @@ module Lumberg
                env[:body]
              end
 
-      env[:body] = if @type == :whostmgr
+      env[:body] = if @type == :whostmgr || @type == :csf
         format_response(uncompressed_body)
       else
         begin
@@ -57,6 +57,8 @@ module Lumberg
         success, message, params = format_ssl_response(response)
       when :whostmgr
         success, message, params = format_whostmgr_response(response)
+      when :csf
+        success, message, params = format_csf_response(response)
       when :error
         message = response['error']
       when :xfer
@@ -161,6 +163,11 @@ module Lumberg
       else
         return false, "", []
       end
+    end
+
+    def format_csf_response(response)
+      message = '<p>...<b>Done</b>.</p'
+      return (response.match(message) ? true : false), response, []
     end
 
     def format_xfer_response(response)

@@ -7,6 +7,7 @@ module Lumberg
     autoload :Reseller,     'lumberg/whm/reseller'
     autoload :Cert,         'lumberg/whm/cert'
     autoload :TransferTool, 'lumberg/whm/transfer_tool'
+    autoload :Csf,          'lumberg/whm/csf'
 
     class << self
 
